@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 data = ARGF.read.split(/\n/)
-p1sum = data.reduce(0) { |sum,string| sum + string.scan(/\d/).values_at(0,-1).join.to_i }
+p1sum = data.map { |s| s.scan(/\d/).values_at(0,-1).join.to_i }.reduce(&:+)
 p p1sum
 
 words = %w/one two three four five six seven eight nine/ 
