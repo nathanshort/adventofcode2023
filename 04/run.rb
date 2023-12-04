@@ -8,7 +8,7 @@ end
 p mc.map{ |x| x > 0 ? 2**(x-1) : 0 }.sum
 
 cards = Array.new( mc.length, 1)
-cards.count.times do |ci|
+cards.each_with_index do |_,ci|
   mc[ci].times do |mi| 
     cards[ci].times do |oi|
       ii = ci+mi+1
