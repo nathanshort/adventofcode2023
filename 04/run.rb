@@ -5,7 +5,7 @@ ARGF.each_line do |line|
   mc << ( data.first.split & data.last.split ).count
 end
 
-p mc.map{ |x| x > 0 ? 2**(x-1) : 0 }.reduce( &:+ )
+p mc.map{ |x| x > 0 ? 2**(x-1) : 0 }.sum
 
 cards = Array.new( mc.length, 1)
 cards.count.times do |ci|
@@ -18,4 +18,4 @@ cards.count.times do |ci|
   end
 end
 
-p cards.reduce(&:+)
+p cards.sum
