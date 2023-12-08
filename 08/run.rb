@@ -17,6 +17,6 @@ b.split(/\n/).map do |x|
 end
 p do_count( ins, map, 'AAA', 'ZZZ')
 
-counts =  map.keys.select{ |k| k[2] == 'A' }.map { |pp| do_count( ins, map, pp, 'Z') }
+counts = map.keys.select{ |k| k[2] == 'A' }.map { |pp| do_count( ins, map, pp, 'Z') }
 p counts.reduce(1) { |a,v| a.lcm(v) }
 
