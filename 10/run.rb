@@ -20,17 +20,16 @@ loop do
   cursor.heading = turn if turn != :none
   break if cursor.location == start
 end
+p moves/2
 
-
-# now raytrace a horizontal from each point, to see how many times it
+# now raytrace a horizontal from each point not in the path, to see how many times it
 # intersects the polygon.  If the ray overlaps a horizontal edge, determine
 # if the edge verticals coming into the edge and leaving the edge are the
 # same direction.  If they are not, then that is an additional intersection.
 #
-# this could probably use some caching - to not try every point multiple
-# times
+# this could probably use some caching - to not try every point multiple times
 
-# map of vertical coming into a horizontal
+# map of vertical coming into a horizontal back to vertical in the same direction
 start_pipe_to_end_pipe = { 'F'=>'7','L' =>'J' }
 
 pip = 0
@@ -45,12 +44,12 @@ grid.each do |p,v|
 
     # this is a horizontal edge.  now walk it until it
     # becomes vertical again
-    if ['L','F'].include?(grid[newp]) && path.key?(newp)
+    if start_pipe_to_end_pipe.keys.include?(grid[newp]) && path.key?(newp)
       edge_start_pipe = grid[newp]
       loop do
         x+=1
         newp = Point.new(newp.x+1,p.y)
-        break if ['7','J'].include?(grid[newp])
+        break if start_pipe_to_end_pipe.values.include?(grid[newp])
       end
       intersections += 1 if start_pipe_to_end_pipe[edge_start_pipe] != grid[newp]
     else
@@ -59,7 +58,6 @@ grid.each do |p,v|
   end
     pip += 1 if intersections.odd?
 end
-
-puts "part1:#{moves/2} part2:#{pip}"
+p pip
 
 
