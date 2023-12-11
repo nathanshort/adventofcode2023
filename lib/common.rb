@@ -147,7 +147,7 @@ class Cursor
       x += args[:by] * factor[@heading]
     end
     Point.new(x,y)
-  end
+  end 
 
   def forward( args )
     factor = ( @ygrows == :south ) ? { 'N' => -1, 'S' => 1, 'E' => 1, 'W' => -1}
@@ -219,21 +219,49 @@ class Grid
     if args[:nooriginx]
       @xmin, @xmax = nil, nil
     end
-    
 
     if args[:io]
-      args[:io].each_line.with_index do |line,y|
-         line.chomp.chars.each_with_index do |c,x|
-         if block_given?
-           x,y,c = yield( x,y,c )
-         end
-         @points[Point.new(x,y)] = c
-         @xmax = x if @xmax < x
-       end
-       @ymax = y
+      yindex = 0
+      args[:io].each_line.with_index do |line,liney|
+        @ymax = yindex
+        empty_line = true
+        line.chomp.chars.each_with_index do |c,x|
+          if block_given?
+            x,y,c = yield( x,yindex,c )
+          end
+          if ! args[:spotsonly] || args[:spotsonly].include?(c)
+            @points[Point.new(x,yindex)] = c
+            empty_line = false
+          end
+          @xmax = x if @xmax < x
+        end
+        yindex += args[:expandemptyy] if empty_line && !args[:expandemptyy].nil?
+        yindex += 1
      end
     end
-   end
+
+    if args[:expandemptyx]
+      byx = Hash.new { |h, k| h[k] = [] }
+      @points.each{ |p,v| byx[p.x] << [p,v] }
+
+      accums = []
+      accum = 0
+      width.times do |x|
+        accum += args[:expandemptyx] if ! byx.key?(x)
+        accums[x] = accum
+      end
+
+      accums.to_enum.with_index.reverse_each do |xoff,i| 
+        next if xoff == 0
+        byx[i].each do |p,v|
+          @points[Point.new(p.x+xoff,p.y)] = v
+          @points.delete(p)
+        end
+      end
+      @xmax += accums.last
+    end
+
+  end
 
   def height
     @ymax - @ymin + 1
