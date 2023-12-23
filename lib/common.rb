@@ -319,6 +319,15 @@ class Grid
     end
   end
 
+  def edge_points( &block )
+    ( @ymin..@ymax).each do |y| 
+      xs = ( y == @ymin || y == @ymax) ? (0..@xmax).to_a : [ 0, @xmax ]
+      xs.each do |x| 
+        block.call( Point.new( x,y ))
+      end
+    end
+  end
+
 
   def outside_points( negx, posx, negy, posy, &block )
     ( @ymin - negy .. ( @ymax + posy ) ).each do |y|
