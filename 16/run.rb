@@ -55,12 +55,7 @@ def traverse( start, grid )
     cursors = new_cursors
   end
 
-  count = 0
-  egrid.each do |point,v|
-    count += 1 if v == '#'
-  end
-
-  count
+  egrid.reduce(0) { |a,p| p.last == '#' ? a+1 : a } 
 end
 
 
