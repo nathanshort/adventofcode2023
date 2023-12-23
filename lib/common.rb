@@ -12,14 +12,14 @@ class PointNd
   end
 
   alias eql? ==
-      
+
   def hash
     hash = nil
     components.each do |c|
       hash = ( hash ? hash ^ c.hash : c.hash )
     end
     hash
-  end  
+  end
 
   def adjacent
     if ! @adjacent
@@ -55,12 +55,12 @@ class Point
   def ==(other)
     other.x == @x && other.y == @y 
   end
-  
+
   alias eql? ==
-        
+
   def hash
     @x.hash ^ @y.hash
-  end  
+  end
 
   def <=>( other )
     ysort = ( @y <=> other.y )
@@ -276,11 +276,11 @@ class Grid
   end
 
   def show
-   (@ymin..@ymax).each do |y|
-     (@xmin..@xmax).each do |x| 
-       print @points[Point.new(x,y)] || " "
-     end
-     print "\n"
+    (@ymin..@ymax).each do |y|
+      (@xmin..@xmax).each do |x| 
+        print @points[Point.new(x,y)] || " "
+      end
+      print "\n"
    end
    print "\n\n"
   end
@@ -295,6 +295,31 @@ class Grid
     end
   end
 
+  def eweach( &block )
+    if block_given?
+      (@ymin..@ymax).each do |y|
+        @xmax.downto(@xmin).each do |x| 
+          block.call( Point.new(x,y), points[Point.new(x,y)] )
+        end
+      end
+    else
+      to_enum(:rleach)
+    end
+  end
+
+  def sneach( &block )
+    if block_given?
+      @ymax.downto(@ymin).each do |y|
+        (@xmin..@xmax).each do |x| 
+          block.call( Point.new(x,y), points[Point.new(x,y)] )
+        end
+      end
+    else
+      to_enum(:sneach)
+    end
+  end
+
+
   def outside_points( negx, posx, negy, posy, &block )
     ( @ymin - negy .. ( @ymax + posy ) ).each do |y|
       ( @xmin - negx .. ( @xmax + posx ) ).each do |x|
@@ -307,6 +332,14 @@ class Grid
 
   def ==( other )
     other.points == @points
+  end
+
+  def hash
+    val = nil
+    points.each do |p,v|
+      val = ( val ? p.hash ^ v.hash ^ val.hash : p.hash ^ v.hash )
+    end
+    val
   end
 
 end
@@ -338,7 +371,6 @@ class ShiftedGrid < Grid
       to_enum(:each)
     end
   end
-
 end
 
 
