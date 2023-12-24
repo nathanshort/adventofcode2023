@@ -16,14 +16,10 @@ def area( ins )
     vertices << [x,y]
   end
 
-  # we got back to the origin - dont want it in the vertices list twice
-  vertices.pop
-
   # from shoelace
   # sum up determinants of each 2 consecutive.  then do the determinant of the
-  # last element and first element
+  # vertices[] as the origin as the first and last element - which allows us to just cons(2) it
   dsum = vertices.each_cons(2).reduce(0) { |a,p| a + Matrix[[p[0][0],p[1][0]],[p[0][1],p[1][1]]].determinant }
-  dsum += Matrix[[vertices[-1][0],vertices[0][0]],[vertices[-1][1],vertices[0][1]]].determinant
   area = (dsum.to_f/2).abs.to_i
 
   # from picks
