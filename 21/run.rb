@@ -51,7 +51,7 @@ start = grid.each.select { |p,v| v == 'S' }.first.first
 #  plots reached in starting grid + surrounded by another set of grids
 #  plots reached in starting grid + surrounded by 2 sets of grids
 #
-# then use those 3 points to interpolate a polynomial to goal/width surrounding grids
+# then use those 3 points to interpolate a polynomial to goal surrounding grids
 xs = [ width/2,width/2+width,width/2+width*2]
 ys = xs.map { |steps| p steps; find_plots( start, grid, steps ) }
 target = 26_501_365
