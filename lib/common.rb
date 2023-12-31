@@ -58,9 +58,9 @@ class Point
 
   alias eql? ==
 
-  def hash
-    @x.hash ^ @y.hash
-  end
+        def hash
+          @x.hash ^ @y.hash
+        end
 
   def <=>( other )
     ysort = ( @y <=> other.y )
@@ -89,14 +89,14 @@ class Point
    end
 
   def to_s
-    "(#{@x},#{y})"
+    "(#{@x},#{@y})"
   end
 end
 
 
 class Cursor
 
-  attr_accessor :location, :heading
+  attr_accessor :location, :heading, :ygrows
 
   # set :ygrows to :north or :south
   # :north -> north moves, increase the y
@@ -173,7 +173,6 @@ class Cursor
         @location.y = -tmp.x
     end
   end
-
 end
   
 
@@ -351,6 +350,39 @@ class Grid
     val
   end
 
+end
+
+
+class RepeatingGrid < Grid
+
+  def initialize( args = {} )
+    super( args )
+  end
+
+  def []( point )
+
+    return @points[point] if point.x >= @xmin && point.x <= @xmax &&
+                             point.y >= @ymin && point.y <= @ymax
+
+    effectivex,effectivey = nil
+    if point.x < @xmin
+      effectivex = (width - (@xmin-point.x).abs ) % width
+    elsif point.x > @xmax
+      effectivex = @xmin + (point.x % width)
+    else
+      effectivex = point.x
+    end
+
+    if point.y < @ymin
+      effectivey = (height - (@ymin-point.y).abs ) % height
+    elsif point.y > @ymax
+      effectivey = @ymin + (point.y % height)
+    else
+      effectivey = point.y
+    end
+
+    @points[Point.new(effectivex,effectivey)]
+  end
 end
 
 
